@@ -32,15 +32,17 @@ import (
 // Authorizer implement the authorize interface that use local repository to
 // authorize the subject access review.
 type Authorizer struct {
-	admin    string
-	enforcer *casbin.SyncedEnforcer
+	tenantAdmin        string
+	privilegedUsername string
+	enforcer           *casbin.SyncedEnforcer
 }
 
 // NewAuthorizer creates a local repository authorizer and returns it.
-func NewAuthorizer(enforcer *casbin.SyncedEnforcer, admin string) *Authorizer {
+func NewAuthorizer(enforcer *casbin.SyncedEnforcer, tenantAdmin string, privilegedUsername string) *Authorizer {
 	return &Authorizer{
-		enforcer: enforcer,
-		admin:    admin,
+		enforcer:           enforcer,
+		tenantAdmin:        tenantAdmin,
+		privilegedUsername: privilegedUsername,
 	}
 }
 
@@ -59,8 +61,8 @@ func (a *Authorizer) Authorize(attr authorizer.Attributes) (authorized authorize
 		}
 	}
 
-	// First check if user is admin
-	if subject == a.admin {
+	// First check if user is tenantAdmin or privileged
+	if subject == a.tenantAdmin || subject == a.privilegedUsername {
 		return authorizer.DecisionAllow, "", nil
 	}
 

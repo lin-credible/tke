@@ -32,7 +32,6 @@ import (
 	"k8s.io/klog"
 	"net/http"
 	"strings"
-	genericoidc "tkestack.io/tke/pkg/apiserver/authentication/authenticator/oidc"
 	commonapiserverfilter "tkestack.io/tke/pkg/apiserver/filter"
 	"tkestack.io/tke/pkg/platform/apiserver/filter"
 	"tkestack.io/tke/pkg/util/log"
@@ -127,11 +126,6 @@ func UnprotectedAuthorized(attributes authorizer.Attributes) authorizer.Decision
 	info := attributes.GetUser()
 	if info == nil {
 		return authorizer.DecisionNoOpinion
-	}
-	extras := info.GetExtra()
-	tenantID, ok := extras[genericoidc.TenantIDKey]
-	if info.GetName() == "admin" && (!ok || len(tenantID) == 0) {
-		return authorizer.DecisionAllow
 	}
 
 	verb := attributes.GetVerb()
