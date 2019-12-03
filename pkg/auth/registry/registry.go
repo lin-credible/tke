@@ -22,7 +22,8 @@ import (
 	"tkestack.io/tke/pkg/auth/registry/apikey"
 	"tkestack.io/tke/pkg/auth/registry/category"
 	"tkestack.io/tke/pkg/auth/registry/localidentity"
-	"tkestack.io/tke/pkg/auth/registry/policy"
+
+	//"tkestack.io/tke/pkg/auth/registry/policy"
 	"tkestack.io/tke/pkg/auth/registry/role"
 
 	"github.com/coreos/etcd/clientv3"
@@ -34,9 +35,9 @@ type Registry struct {
 	dexStorage           storage.Storage
 	localIdentityStorage *localidentity.Storage
 	roleStorage          *role.Storage
-	policyStorage        *policy.Storage
-	categoryStorage      *category.Storage
-	apikeyStorage        apikey.Storage
+	//	policyStorage        *policy.Storage
+	categoryStorage *category.Storage
+	apikeyStorage   apikey.Storage
 }
 
 // NewRegistry to create the new Registry object instance.
@@ -45,9 +46,9 @@ func NewRegistry(db *clientv3.Client, store storage.Storage) (*Registry, error) 
 		dexStorage:           store,
 		localIdentityStorage: localidentity.NewLocalIdentity(db),
 		roleStorage:          role.NewRoleStorage(db),
-		policyStorage:        policy.NewPolicyStorage(db),
-		categoryStorage:      category.NewCategoryStorage(db),
-		apikeyStorage:        apikey.NewAPIKeyStorage(db),
+		//		policyStorage:        policy.NewPolicyStorage(db),
+		categoryStorage: category.NewCategoryStorage(db),
+		apikeyStorage:   apikey.NewAPIKeyStorage(db),
 	}, nil
 }
 
@@ -62,9 +63,9 @@ func (r *Registry) RoleStorage() *role.Storage {
 }
 
 // PolicyStorage returns policy storage instance.
-func (r *Registry) PolicyStorage() *policy.Storage {
-	return r.policyStorage
-}
+//func (r *Registry) PolicyStorage() *policy.Storage {
+//	return r.policyStorage
+//}
 
 // DexStorage returns dex storage instance
 func (r *Registry) DexStorage() storage.Storage {
