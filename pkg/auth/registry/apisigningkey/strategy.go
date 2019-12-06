@@ -65,10 +65,6 @@ func (Strategy) PrepareForCreate(ctx context.Context, obj runtime.Object) {
 
 // Validate validates a new api signing key.
 func (Strategy) Validate(ctx context.Context, obj runtime.Object) field.ErrorList {
-	_, tenantID := authentication.GetUsernameAndTenantID(ctx)
-	if tenantID != "" {
-		return field.ErrorList{field.Forbidden(field.NewPath(""), "Please contact admin to create api sign key")}
-	}
 	return ValidateSigningKey(obj.(*auth.APISigningKey))
 }
 
