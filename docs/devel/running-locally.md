@@ -13,7 +13,8 @@
 - [Make self-signed certificate](#make-self-signed-certificate)
 - [Running on the machine](#running-on-the-machine)
     - [Create static token auth file](#create-static-token-auth-file)
-    - [tke-auth](#tke-auth)
+    - [tke-auth-api](#tke-auth-api)
+    - [tke-auth-controller](#tke-auth-controller)
     - [tke-platform-api](#tke-platform-api)
     - [tke-platform-controller](#tke-platform-controller)
     - [tke-business-api](#tke-business-api)
@@ -36,9 +37,9 @@ In order for the TKE component to work properly locally, the underlying services
 
 Docker, using one of the following configurations:
   * **macOS** You can either use Docker for Mac or docker-machine. See 
-  installation instructions [here](https://docs.docker.com/docker-for-mac/).
+    installation instructions [here](https://docs.docker.com/docker-for-mac/).
   * **Linux with local Docker**  Install Docker according to the 
-  [instructions](https://docs.docker.com/installation/#installation) for your OS.
+    [instructions](https://docs.docker.com/installation/#installation) for your OS.
 
 ### etcd
 
@@ -48,15 +49,15 @@ database that TKE requires for almost all components.
 If etcd is not installed on the machine, in addition to the installation of the 
 package management tool corresponding to the OS.
   * **macOS** You can use the following command to install and start the etcd 
-  service.
-  
+    service.
+
   ```sh
   $ brew install etcd
   $ brew services start etcd
   ```
 
   * **Linux** You can use docker to start a single-node etcd to run in the 
-  [official documentation of etcd](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/container.md#running-a-single-node-etcd-1).
+    [official documentation of etcd](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/container.md#running-a-single-node-etcd-1).
 
 ### Go
 
@@ -165,9 +166,9 @@ token authentication for all API type services.
 token,admin,1,"administrator"
 ```
 
-### tke-auth
+### tke-auth-api
 
-Generate the configuration files needed to run the `tke-auth` component.
+Generate the configuration files needed to run the `tke-auth-api` component.
 
 ***_debug/auth.json***
 
@@ -203,7 +204,56 @@ Generate the configuration files needed to run the `tke-auth` component.
 Running it:
 
 ```sh
-$ _output/${host_os}/${host_arch}/tke-auth -C _debug/auth.json
+$ _output/${host_os}/${host_arch}/tke-auth-api -C _debug/auth.json
+```
+
+### tke-auth-controller
+
+Generate the configuration files needed to run the `tke-auth-controller` 
+component.
+
+***_debug/auth-api-client-config.yaml***
+
+```yaml
+apiVersion: v1
+kind: Config
+clusters:
+  - name: tke
+    cluster:
+      certificate-authority: ${root_store}/mkcert/rootCA.pem
+      server: https://127.0.0.1:9451
+users:
+  - name: admin
+    user:
+      token: token
+current-context: tke
+contexts:
+  - context:
+      cluster: tke
+      user: admin
+    name: tke
+```
+
+***_debug/auth-controller.json***
+
+```json
+{
+  "secure_serving": {
+    "tls_cert_file": "_debug/certificates/localhost+2.pem",
+    "tls_private_key_file": "_debug/certificates/localhost+2-key.pem"
+  },
+  "client": {
+    "platform": {
+      "api_server_client_config": "_debug/auth-api-client-config.yaml"
+    }
+  }
+}
+```
+
+Running it:
+
+```sh
+$ _output/${host_os}/${host_arch}/tke-auth-controller -C _debug/auth-controller.json
 ```
 
 ### tke-platform-api
