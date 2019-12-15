@@ -30,7 +30,6 @@ require (
 	github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869 // indirect
 	github.com/casbin/casbin/v2 v2.1.2
 	github.com/chartmuseum/storage v0.5.0
-	github.com/coreos/bbolt v1.3.3 // indirect
 	github.com/coreos/etcd v3.3.15+incompatible
 	github.com/coreos/go-oidc v2.1.0+incompatible
 	github.com/coreos/go-systemd v0.0.0-20190719114852-fd7a80b32e1f // indirect
@@ -77,7 +76,6 @@ require (
 	github.com/opencontainers/image-spec v1.0.1 // indirect
 	github.com/openzipkin/zipkin-go v0.2.2 // indirect
 	github.com/parnurzeal/gorequest v0.2.15
-	github.com/pborman/uuid v1.2.0
 	github.com/pkg/errors v0.8.1
 	github.com/pkg/sftp v1.10.0
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
@@ -107,7 +105,6 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.28.0
 	gopkg.in/square/go-jose.v2 v2.3.1
 	gopkg.in/yaml.v2 v2.2.4
-	gotest.tools v2.2.0+incompatible
 	helm.sh/chartmuseum v0.10.0
 	k8s.io/api v0.0.0
 	k8s.io/apiextensions-apiserver v0.0.0
