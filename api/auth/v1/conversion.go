@@ -31,7 +31,7 @@ func addConversionFuncs(scheme *runtime.Scheme) error {
 		AddFieldLabelConversionsForPolicy,
 		AddFieldLabelConversionsForRule,
 		AddFieldLabelConversionsForCategory,
-		AddFieldLabelConversionsForGroup,
+		AddFieldLabelConversionsForLocalGroup,
 		AddFieldLabelConversionsForRole,
 	}
 	for _, f := range funcs {
@@ -138,11 +138,11 @@ func AddFieldLabelConversionsForCategory(scheme *runtime.Scheme) error {
 		})
 }
 
-// AddFieldLabelConversionsForGroup adds a conversion function to convert
-// field selectors of Group from the given version to internal version
+// AddFieldLabelConversionsForLocalGroup adds a conversion function to convert
+// field selectors of LocalGroup from the given version to internal version
 // representation.
-func AddFieldLabelConversionsForGroup(scheme *runtime.Scheme) error {
-	return scheme.AddFieldLabelConversionFunc(SchemeGroupVersion.WithKind("Group"),
+func AddFieldLabelConversionsForLocalGroup(scheme *runtime.Scheme) error {
+	return scheme.AddFieldLabelConversionFunc(SchemeGroupVersion.WithKind("LocalGroup"),
 		func(label, value string) (string, string, error) {
 			switch label {
 			case "spec.displayName",

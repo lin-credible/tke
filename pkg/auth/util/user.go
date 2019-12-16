@@ -54,8 +54,16 @@ func UserPrefix(tenantID string) string {
 	return fmt.Sprintf("%s::user::", tenantID)
 }
 
-func GetGroupsForUser(authClient authinternalclient.AuthInterface, userID string) (auth.GroupList, error) {
-	groupList := auth.GroupList{}
+func GroupKey(tenantID string, name string) string {
+	return fmt.Sprintf("%s%s", GroupPrefix(tenantID), name)
+}
+
+func GroupPrefix(tenantID string) string {
+	return fmt.Sprintf("%s::group::", tenantID)
+}
+
+func GetGroupsForUser(authClient authinternalclient.AuthInterface, userID string) (auth.LocalGroupList, error) {
+	groupList := auth.LocalGroupList{}
 	err := authClient.RESTClient().Get().
 		Resource("localidentities").
 		Name(userID).

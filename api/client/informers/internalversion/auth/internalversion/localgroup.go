@@ -33,58 +33,58 @@ import (
 	internalversion "tkestack.io/tke/api/client/listers/auth/internalversion"
 )
 
-// GroupInformer provides access to a shared informer and lister for
-// Groups.
-type GroupInformer interface {
+// LocalGroupInformer provides access to a shared informer and lister for
+// LocalGroups.
+type LocalGroupInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() internalversion.GroupLister
+	Lister() internalversion.LocalGroupLister
 }
 
-type groupInformer struct {
+type localGroupInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 }
 
-// NewGroupInformer constructs a new informer for Group type.
+// NewLocalGroupInformer constructs a new informer for LocalGroup type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewGroupInformer(client clientsetinternalversion.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredGroupInformer(client, resyncPeriod, indexers, nil)
+func NewLocalGroupInformer(client clientsetinternalversion.Interface, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredLocalGroupInformer(client, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredGroupInformer constructs a new informer for Group type.
+// NewFilteredLocalGroupInformer constructs a new informer for LocalGroup type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredGroupInformer(client clientsetinternalversion.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredLocalGroupInformer(client clientsetinternalversion.Interface, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.Auth().Groups().List(options)
+				return client.Auth().LocalGroups().List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.Auth().Groups().Watch(options)
+				return client.Auth().LocalGroups().Watch(options)
 			},
 		},
-		&auth.Group{},
+		&auth.LocalGroup{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *groupInformer) defaultInformer(client clientsetinternalversion.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredGroupInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *localGroupInformer) defaultInformer(client clientsetinternalversion.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredLocalGroupInformer(client, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *groupInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&auth.Group{}, f.defaultInformer)
+func (f *localGroupInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&auth.LocalGroup{}, f.defaultInformer)
 }
 
-func (f *groupInformer) Lister() internalversion.GroupLister {
-	return internalversion.NewGroupLister(f.Informer().GetIndexer())
+func (f *localGroupInformer) Lister() internalversion.LocalGroupLister {
+	return internalversion.NewLocalGroupLister(f.Informer().GetIndexer())
 }

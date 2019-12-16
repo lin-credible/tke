@@ -99,7 +99,7 @@ func ValidateRole(role *auth.Role, authClient authinternalclient.AuthInterface) 
 			continue
 		}
 
-		val, err := authClient.Groups().Get(subj.ID, metav1.GetOptions{})
+		val, err := authClient.LocalGroups().Get(subj.ID, metav1.GetOptions{})
 		if err != nil {
 			if apierrors.IsNotFound(err) {
 				allErrs = append(allErrs, field.NotFound(fldStatPath.Child("groups"), subj.ID))

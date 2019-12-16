@@ -88,7 +88,7 @@ type ResourceAttributes struct {
 	Namespace string `json:"namespace,omitempty"`
 	// Verb is a kubernetes resource API verb, like: get, list, watch, create, update, delete, proxy.  "*" means all.
 	Verb string `json:"verb,omitempty"`
-	// Group is the API Group of the Resource.  "*" means all.
+	// LocalGroup is the API LocalGroup of the Resource.  "*" means all.
 	Group string `json:"group,omitempty"`
 	// Version is the API Version of the Resource.  "*" means all.
 	Version string `json:"version,omitempty"`

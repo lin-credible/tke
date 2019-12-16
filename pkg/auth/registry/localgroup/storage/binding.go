@@ -61,7 +61,7 @@ func (r *BindingREST) Create(ctx context.Context, obj runtime.Object, createVali
 	if err != nil {
 		return nil, err
 	}
-	group := polObj.(*auth.Group)
+	group := polObj.(*auth.LocalGroup)
 
 	for _, sub := range bind.Users {
 		if !util.InSubjectsByName(sub, group.Status.Users) {
@@ -71,5 +71,5 @@ func (r *BindingREST) Create(ctx context.Context, obj runtime.Object, createVali
 
 	log.Info("group members", log.String("group", group.Name), log.Any("members", group.Status.Users))
 
-	return r.authClient.Groups().UpdateStatus(group)
+	return r.authClient.LocalGroups().UpdateStatus(group)
 }

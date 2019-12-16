@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations under the License.
  */
 
-package group
+package localgroup
 
 import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -34,7 +34,7 @@ import (
 var ValidateGroupName = apiMachineryValidation.NameIsDNSLabel
 
 // ValidateGroup tests if required fields in the group are set.
-func ValidateGroup(group *auth.Group, authClient authinternalclient.AuthInterface) field.ErrorList {
+func ValidateGroup(group *auth.LocalGroup, authClient authinternalclient.AuthInterface) field.ErrorList {
 	allErrs := apiMachineryValidation.ValidateObjectMeta(&group.ObjectMeta, false, ValidateGroupName, field.NewPath("metadata"))
 
 	fldSpecPath := field.NewPath("spec")
@@ -83,7 +83,7 @@ func ValidateGroup(group *auth.Group, authClient authinternalclient.AuthInterfac
 
 // ValidateGroupUpdate tests if required fields in the group are set during
 // an update.
-func ValidateGroupUpdate(group *auth.Group, old *auth.Group, authClient authinternalclient.AuthInterface) field.ErrorList {
+func ValidateGroupUpdate(group *auth.LocalGroup, old *auth.LocalGroup, authClient authinternalclient.AuthInterface) field.ErrorList {
 	allErrs := apiMachineryValidation.ValidateObjectMetaUpdate(&group.ObjectMeta, &old.ObjectMeta, field.NewPath("metadata"))
 	allErrs = append(allErrs, ValidateGroup(group, authClient)...)
 

@@ -34,8 +34,8 @@ type Interface interface {
 	Categories() CategoryInformer
 	// ConfigMaps returns a ConfigMapInformer.
 	ConfigMaps() ConfigMapInformer
-	// Groups returns a GroupInformer.
-	Groups() GroupInformer
+	// LocalGroups returns a LocalGroupInformer.
+	LocalGroups() LocalGroupInformer
 	// LocalIdentities returns a LocalIdentityInformer.
 	LocalIdentities() LocalIdentityInformer
 	// Policies returns a PolicyInformer.
@@ -77,9 +77,9 @@ func (v *version) ConfigMaps() ConfigMapInformer {
 	return &configMapInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
-// Groups returns a GroupInformer.
-func (v *version) Groups() GroupInformer {
-	return &groupInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
+// LocalGroups returns a LocalGroupInformer.
+func (v *version) LocalGroups() LocalGroupInformer {
+	return &localGroupInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
 
 // LocalIdentities returns a LocalIdentityInformer.

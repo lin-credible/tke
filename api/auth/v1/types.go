@@ -118,6 +118,65 @@ type PasswordReq struct {
 	OriginalPassword string `json:"originalPassword,omitempty" protobuf:"bytes,2,opt,name=originalPassword"`
 }
 
+// User is an object that contains the metadata about identify about tke local idp or third-party idp.
+type User struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	// Spec defines the desired identities of identity in this set.
+	Spec UserSpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+}
+
+// UserSpec is a description of an user.
+type UserSpec struct {
+	ID string `json:"id" protobuf:"bytes,1,opt,name=id"`
+
+	//UserName must be unique in the same tenant.
+	Name        string            `json:"name" protobuf:"bytes,2,opt,name=name"`
+	DisplayName string            `json:"displayName,omitempty" protobuf:"bytes,3,opt,name=displayName"`
+	Email       string            `json:"email,omitempty" protobuf:"bytes,4,opt,name=email"`
+	PhoneNumber string            `json:"phoneNumber,omitempty" protobuf:"bytes,5,opt,name=phoneNumber"`
+	TenantID    string            `json:"tenantID,omitempty" protobuf:"bytes,6,opt,name=tenantID"`
+	Extra       map[string]string `json:"extra,omitempty" protobuf:"bytes,7,rep,name=extra"`
+}
+
+// +genclient:nonNamespaced
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// UserList is the whole list of all users.
+type UserList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	// List of User.
+	Items []User `json:"items,omitempty" protobuf:"bytes,2,rep,name=items"`
+}
+
+// Group is an object that contains the metadata about identify about tke local idp or third-party idp.
+type Group struct {
+	metav1.TypeMeta   `json:",inline"`
+	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	// Spec defines the desired identities of group in this set.
+	Spec GroupSpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+}
+
+// GroupSpec is a description of an Group.
+type GroupSpec struct {
+	ID          string `json:"id" protobuf:"bytes,1,opt,name=id"`
+	DisplayName string `json:"displayName" protobuf:"bytes,2,opt,name=displayName"`
+	TenantID    string `json:"tenantID" protobuf:"bytes,3,opt,name=tenantID"`
+	Description string `json:"description" protobuf:"bytes,4,opt,name=description"`
+}
+
+// +genclient:nonNamespaced
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// GroupList is the whole list of all groups.
+type GroupList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
+	// List of User.
+	Items []Group `json:"items,omitempty" protobuf:"bytes,2,rep,name=items"`
+}
+
 // +genclient
 // +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
@@ -539,27 +598,27 @@ type PolicyBinding struct {
 // +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Group represents a group of users.
-type Group struct {
+// LocalGroup represents a group of users.
+type LocalGroup struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
 
 	// Spec defines the desired identities of group document in this set.
-	Spec GroupSpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
+	Spec LocalGroupSpec `json:"spec,omitempty" protobuf:"bytes,2,opt,name=spec"`
 
 	// +optional
-	Status GroupStatus `json:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
+	Status LocalGroupStatus `json:"status,omitempty" protobuf:"bytes,3,opt,name=status"`
 }
 
 // +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// GroupList is the whole list of all groups.
-type GroupList struct {
+// LocalGroupList is the whole list of all groups.
+type LocalGroupList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty" protobuf:"bytes,1,opt,name=metadata"`
-	// List of rules.
-	Items []Group `json:"items" protobuf:"bytes,2,rep,name=items"`
+	// List of LocalGroup.
+	Items []LocalGroup `json:"items" protobuf:"bytes,2,rep,name=items"`
 }
 
 // GroupPhase defines the phase of group constructor.
@@ -571,8 +630,8 @@ const (
 	GroupTerminating GroupPhase = "Terminating"
 )
 
-// GroupSpec is a description of group.
-type GroupSpec struct {
+// LocalGroupSpec is a description of group.
+type LocalGroupSpec struct {
 	Finalizers []FinalizerName `json:"finalizers,omitempty" protobuf:"bytes,1,rep,name=finalizers,casttype=FinalizerName"`
 
 	DisplayName string `json:"displayName" protobuf:"bytes,2,opt,name=displayName"`
@@ -583,8 +642,8 @@ type GroupSpec struct {
 	Description string `json:"description" protobuf:"bytes,5,opt,name=description"`
 }
 
-// GroupStatus represents information about the status of a group.
-type GroupStatus struct {
+// LocalGroupStatus represents information about the status of a group.
+type LocalGroupStatus struct {
 	// +optional
 	Phase GroupPhase `json:"phase,omitempty" protobuf:"bytes,1,opt,name=phase,casttype=GroupPhase"`
 

@@ -33,7 +33,7 @@ import (
 	apisignstorage "tkestack.io/tke/pkg/auth/registry/apisigningkey/storage"
 	categorystorage "tkestack.io/tke/pkg/auth/registry/category/storage"
 	configmapstorage "tkestack.io/tke/pkg/auth/registry/configmap/storage"
-	groupstorage "tkestack.io/tke/pkg/auth/registry/group/storage"
+	groupstorage "tkestack.io/tke/pkg/auth/registry/localgroup/storage"
 	localidentitystorage "tkestack.io/tke/pkg/auth/registry/localidentity/storage"
 	policystorage "tkestack.io/tke/pkg/auth/registry/policy/storage"
 	rolestorage "tkestack.io/tke/pkg/auth/registry/role/storage"
@@ -123,12 +123,12 @@ func (s *StorageProvider) v1Storage(apiResourceConfigSource serverstorage.APIRes
 		storageMap["roles/groups"] = roleRest.Group
 
 		groupRest := groupstorage.NewStorage(restOptionsGetter, authClient, s.PrivilegedUsername)
-		storageMap["groups"] = groupRest.Group
-		storageMap["groups/finalize"] = groupRest.Finalize
-		storageMap["groups/status"] = groupRest.Status
-		storageMap["groups/binding"] = groupRest.Binding
-		storageMap["groups/unbinding"] = groupRest.Unbinding
-		storageMap["groups/users"] = groupRest.User
+		storageMap["localgroups"] = groupRest.Group
+		storageMap["localgroups/finalize"] = groupRest.Finalize
+		storageMap["localgroups/status"] = groupRest.Status
+		storageMap["localgroups/binding"] = groupRest.Binding
+		storageMap["localgroups/unbinding"] = groupRest.Unbinding
+		storageMap["localgroups/users"] = groupRest.User
 	}
 
 	return storageMap

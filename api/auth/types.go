@@ -57,8 +57,8 @@ const (
 	// PolicyFinalize is an internal finalizer values to Policy.
 	PolicyFinalize FinalizerName = "policy"
 
-	// PolicyFinalize is an internal finalizer values to Group.
-	GroupFinalize FinalizerName = "group"
+	// PolicyFinalize is an internal finalizer values to LocalGroup.
+	LocalGroupFinalize FinalizerName = "localgroup"
 
 	// RoleFinalize is an internal finalizer values to Role.
 	RoleFinalize FinalizerName = "role"
@@ -104,6 +104,65 @@ type PasswordReq struct {
 
 	HashedPassword   string
 	OriginalPassword string
+}
+
+// User is an object that contains the metadata about identify about tke local idp or third-party idp.
+type User struct {
+	metav1.TypeMeta
+	metav1.ObjectMeta
+	// Spec defines the desired identities of identity in this set.
+	Spec UserSpec
+}
+
+// UserSpec is a description of an user.
+type UserSpec struct {
+	ID string
+
+	//Name must be unique in the same tenant.
+	Name        string
+	DisplayName string
+	Email       string
+	PhoneNumber string
+	TenantID    string
+	Extra       map[string]string
+}
+
+// +genclient:nonNamespaced
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// UserList is the whole list of all users.
+type UserList struct {
+	metav1.TypeMeta
+	metav1.ListMeta
+	// List of User.
+	Items []User
+}
+
+// Group is an object that contains the metadata about identify about tke local idp or third-party idp.
+type Group struct {
+	metav1.TypeMeta
+	metav1.ObjectMeta
+	// Spec defines the desired identities of group in this set.
+	Spec GroupSpec
+}
+
+// GroupSpec is a description of an Group.
+type GroupSpec struct {
+	ID          string
+	DisplayName string
+	TenantID    string
+	Description string
+}
+
+// +genclient:nonNamespaced
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+
+// GroupList is the whole list of all groups.
+type GroupList struct {
+	metav1.TypeMeta
+	metav1.ListMeta
+	// List of group.
+	Items []Group
 }
 
 // +genclient
@@ -508,27 +567,27 @@ type PolicyBinding struct {
 // +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Group represents a group of users.
-type Group struct {
+// LocalGroup represents a group of users.
+type LocalGroup struct {
 	metav1.TypeMeta
 	metav1.ObjectMeta
 
 	// Spec defines the desired identities of group document in this set.
-	Spec GroupSpec
+	Spec LocalGroupSpec
 
 	// +optional
-	Status GroupStatus
+	Status LocalGroupStatus
 }
 
 // +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// GroupList is the whole list of all groups.
-type GroupList struct {
+// LocalGroupList is the whole list of all groups.
+type LocalGroupList struct {
 	metav1.TypeMeta
 	metav1.ListMeta
-	// List of rules.
-	Items []Group
+	// List of localgroup.
+	Items []LocalGroup
 }
 
 // GroupPhase defines the phase of group constructor.
@@ -540,8 +599,8 @@ const (
 	GroupTerminating GroupPhase = "Terminating"
 )
 
-// GroupSpec is a description of group.
-type GroupSpec struct {
+// LocalGroupSpec is a description of group.
+type LocalGroupSpec struct {
 	Finalizers []FinalizerName
 
 	DisplayName string
@@ -552,8 +611,8 @@ type GroupSpec struct {
 	Description string
 }
 
-// GroupStatus represents information about the status of a group.
-type GroupStatus struct {
+// LocalGroupStatus represents information about the status of a group.
+type LocalGroupStatus struct {
 	// +optional
 	Phase GroupPhase
 

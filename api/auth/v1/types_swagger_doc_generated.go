@@ -192,8 +192,8 @@ func (ConfigMapList) SwaggerDoc() map[string]string {
 }
 
 var map_Group = map[string]string{
-	"":     "Group represents a group of users.",
-	"spec": "Spec defines the desired identities of group document in this set.",
+	"":     "Group is an object that contains the metadata about identify about tke local idp or third-party idp.",
+	"spec": "Spec defines the desired identities of group in this set.",
 }
 
 func (Group) SwaggerDoc() map[string]string {
@@ -202,7 +202,7 @@ func (Group) SwaggerDoc() map[string]string {
 
 var map_GroupList = map[string]string{
 	"":      "GroupList is the whole list of all groups.",
-	"items": "List of rules.",
+	"items": "List of User.",
 }
 
 func (GroupList) SwaggerDoc() map[string]string {
@@ -210,21 +210,47 @@ func (GroupList) SwaggerDoc() map[string]string {
 }
 
 var map_GroupSpec = map[string]string{
-	"":         "GroupSpec is a description of group.",
-	"username": "Creator",
+	"": "GroupSpec is a description of an Group.",
 }
 
 func (GroupSpec) SwaggerDoc() map[string]string {
 	return map_GroupSpec
 }
 
-var map_GroupStatus = map[string]string{
-	"":      "GroupStatus represents information about the status of a group.",
+var map_LocalGroup = map[string]string{
+	"":     "LocalGroup represents a group of users.",
+	"spec": "Spec defines the desired identities of group document in this set.",
+}
+
+func (LocalGroup) SwaggerDoc() map[string]string {
+	return map_LocalGroup
+}
+
+var map_LocalGroupList = map[string]string{
+	"":      "LocalGroupList is the whole list of all groups.",
+	"items": "List of LocalGroup.",
+}
+
+func (LocalGroupList) SwaggerDoc() map[string]string {
+	return map_LocalGroupList
+}
+
+var map_LocalGroupSpec = map[string]string{
+	"":         "LocalGroupSpec is a description of group.",
+	"username": "Creator",
+}
+
+func (LocalGroupSpec) SwaggerDoc() map[string]string {
+	return map_LocalGroupSpec
+}
+
+var map_LocalGroupStatus = map[string]string{
+	"":      "LocalGroupStatus represents information about the status of a group.",
 	"users": "Users represents the members of the group.",
 }
 
-func (GroupStatus) SwaggerDoc() map[string]string {
-	return map_GroupStatus
+func (LocalGroupStatus) SwaggerDoc() map[string]string {
+	return map_LocalGroupStatus
 }
 
 var map_LocalIdentity = map[string]string{
@@ -456,6 +482,33 @@ var map_SubjectAccessReviewStatus = map[string]string{
 
 func (SubjectAccessReviewStatus) SwaggerDoc() map[string]string {
 	return map_SubjectAccessReviewStatus
+}
+
+var map_User = map[string]string{
+	"":     "User is an object that contains the metadata about identify about tke local idp or third-party idp.",
+	"spec": "Spec defines the desired identities of identity in this set.",
+}
+
+func (User) SwaggerDoc() map[string]string {
+	return map_User
+}
+
+var map_UserList = map[string]string{
+	"":      "UserList is the whole list of all users.",
+	"items": "List of User.",
+}
+
+func (UserList) SwaggerDoc() map[string]string {
+	return map_UserList
+}
+
+var map_UserSpec = map[string]string{
+	"":     "UserSpec is a description of an user.",
+	"name": "UserName must be unique in the same tenant.",
+}
+
+func (UserSpec) SwaggerDoc() map[string]string {
+	return map_UserSpec
 }
 
 // AUTO-GENERATED FUNCTIONS END HERE

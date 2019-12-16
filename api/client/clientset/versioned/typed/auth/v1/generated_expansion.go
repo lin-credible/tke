@@ -28,7 +28,7 @@ type CategoryExpansion interface{}
 
 type ConfigMapExpansion interface{}
 
-type GroupExpansion interface{}
+type LocalGroupExpansion interface{}
 
 type LocalIdentityExpansion interface{}
 

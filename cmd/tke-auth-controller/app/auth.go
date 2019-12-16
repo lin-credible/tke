@@ -83,13 +83,13 @@ func startLocalIdentityController(ctx ControllerContext) (http.Handler, bool, er
 }
 
 func startGroupController(ctx ControllerContext) (http.Handler, bool, error) {
-	if !ctx.AvailableResources[schema.GroupVersionResource{Group: v1.GroupName, Version: v1.Version, Resource: "groups"}] {
+	if !ctx.AvailableResources[schema.GroupVersionResource{Group: v1.GroupName, Version: v1.Version, Resource: "localgroups"}] {
 		return nil, false, nil
 	}
 
 	ctrl := group.NewController(
 		ctx.ClientBuilder.ClientOrDie("group-controller"),
-		ctx.InformerFactory.Auth().V1().Groups(),
+		ctx.InformerFactory.Auth().V1().LocalGroups(),
 		ctx.InformerFactory.Auth().V1().Rules(),
 		ctx.Enforcer,
 		groupSyncPeriod,

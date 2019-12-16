@@ -40,7 +40,7 @@ import (
 
 	"tkestack.io/tke/api/auth"
 	apiserverutil "tkestack.io/tke/pkg/apiserver/util"
-	"tkestack.io/tke/pkg/auth/registry/group"
+	"tkestack.io/tke/pkg/auth/registry/localgroup"
 	"tkestack.io/tke/pkg/auth/util"
 	"tkestack.io/tke/pkg/util/log"
 
@@ -61,12 +61,12 @@ type Storage struct {
 
 // NewStorage returns a Storage object that will work against groups.
 func NewStorage(optsGetter generic.RESTOptionsGetter, authClient authinternalclient.AuthInterface, privilegedUsername string) *Storage {
-	strategy := group.NewStrategy(authClient)
+	strategy := localgroup.NewStrategy(authClient)
 	store := &registry.Store{
-		NewFunc:                  func() runtime.Object { return &auth.Group{} },
-		NewListFunc:              func() runtime.Object { return &auth.GroupList{} },
-		DefaultQualifiedResource: auth.Resource("groups"),
-		PredicateFunc:            group.MatchGroup,
+		NewFunc:                  func() runtime.Object { return &auth.LocalGroup{} },
+		NewListFunc:              func() runtime.Object { return &auth.LocalGroupList{} },
+		DefaultQualifiedResource: auth.Resource("localgroups"),
+		PredicateFunc:            localgroup.MatchGroup,
 
 		CreateStrategy: strategy,
 		UpdateStrategy: strategy,
@@ -74,7 +74,7 @@ func NewStorage(optsGetter generic.RESTOptionsGetter, authClient authinternalcli
 	}
 	options := &generic.StoreOptions{
 		RESTOptions: optsGetter,
-		AttrFunc:    group.GetAttrs,
+		AttrFunc:    localgroup.GetAttrs,
 	}
 
 	if err := store.CompleteWithOptions(options); err != nil {
@@ -82,12 +82,12 @@ func NewStorage(optsGetter generic.RESTOptionsGetter, authClient authinternalcli
 	}
 
 	statusStore := *store
-	statusStore.UpdateStrategy = group.NewStatusStrategy(strategy)
-	statusStore.ExportStrategy = group.NewStatusStrategy(strategy)
+	statusStore.UpdateStrategy = localgroup.NewStatusStrategy(strategy)
+	statusStore.ExportStrategy = localgroup.NewStatusStrategy(strategy)
 
 	finalizeStore := *store
-	finalizeStore.UpdateStrategy = group.NewFinalizerStrategy(strategy)
-	finalizeStore.ExportStrategy = group.NewFinalizerStrategy(strategy)
+	finalizeStore.UpdateStrategy = localgroup.NewFinalizerStrategy(strategy)
+	finalizeStore.ExportStrategy = localgroup.NewFinalizerStrategy(strategy)
 
 	return &Storage{
 		Group:     &REST{store, privilegedUsername},
@@ -99,28 +99,28 @@ func NewStorage(optsGetter generic.RESTOptionsGetter, authClient authinternalcli
 	}
 }
 
-// ValidateGetObjectAndTenantID validate name and tenantID, if success return Group
+// ValidateGetObjectAndTenantID validate name and tenantID, if success return LocalGroup
 func ValidateGetObjectAndTenantID(ctx context.Context, store *registry.Store, name string, options *metav1.GetOptions) (runtime.Object, error) {
 	obj, err := store.Get(ctx, name, options)
 	if err != nil {
 		return nil, err
 	}
 
-	o := obj.(*auth.Group)
+	o := obj.(*auth.LocalGroup)
 	if err := util.FilterGroup(ctx, o); err != nil {
 		return nil, err
 	}
 	return o, nil
 }
 
-// ValidateExportObjectAndTenantID validate name and tenantID, if success return Group
+// ValidateExportObjectAndTenantID validate name and tenantID, if success return LocalGroup
 func ValidateExportObjectAndTenantID(ctx context.Context, store *registry.Store, name string, options metav1.ExportOptions) (runtime.Object, error) {
 	obj, err := store.Export(ctx, name, options)
 	if err != nil {
 		return nil, err
 	}
 
-	o := obj.(*auth.Group)
+	o := obj.(*auth.LocalGroup)
 	if err := util.FilterGroup(ctx, o); err != nil {
 		return nil, err
 	}
@@ -255,7 +255,7 @@ func (r *REST) Delete(ctx context.Context, name string, deleteValidation rest.Va
 	if err != nil {
 		return nil, false, err
 	}
-	group := object.(*auth.Group)
+	group := object.(*auth.LocalGroup)
 
 	// Ensure we have a UID precondition
 	if options == nil {
@@ -288,10 +288,10 @@ func (r *REST) Delete(ctx context.Context, name string, deleteValidation rest.Va
 		err = r.Store.Storage.GuaranteedUpdate(
 			ctx, key, out, false, &preconditions,
 			storage.SimpleUpdate(func(existing runtime.Object) (runtime.Object, error) {
-				existingGroup, ok := existing.(*auth.Group)
+				existingGroup, ok := existing.(*auth.LocalGroup)
 				if !ok {
 					// wrong type
-					return nil, fmt.Errorf("expected *auth.Group, got %v", existing)
+					return nil, fmt.Errorf("expected *auth.LocalGroup, got %v", existing)
 				}
 				if err := deleteValidation(ctx, existingGroup); err != nil {
 					return nil, err
